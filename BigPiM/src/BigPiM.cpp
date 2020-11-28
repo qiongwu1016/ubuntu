@@ -31,12 +31,52 @@ void power4(mpf_t& xxxx, const mpf_t& x)
     mpf_mul(xxxx, xx, xx);
 }
 
+//P1 = a_prev*(1+y)^4
+void compute_aP1(mpf_t& aP1, const mpf_t& y, const mpf_t& a_prev)
+{
+	mpf_t temp1, temp2, one;
+	mpf_init(one);
+	mpf_set_str(one, "1", 10);
+	mpf_init(temp1);
+	mpf_init(temp2);
+
+	mpf_add(temp1, one, y);
+	power4(temp2, temp1);
+	mpf_mul(aP1, a_prev, temp2);
+}
+
+//aP2 = 2^(2i + 1) * y * (1+ y + y^2)
+void compute_aP2(mpf_t& aP2, const mpf_t& y, mpf_t& powers2)
+{
+	mpf_t temp1, temp2, one, four, y2;
+	mpf_init(temp1);
+	mpf_init(temp2);
+	mpf_init(one);
+	mpf_init(four);
+	mpf_init(y2);
+	mpf_set_str(one, "1", 10);
+	mpf_set_str(four, "4", 10);
+	mpf_mul(y2, y, y);
+
+	mpf_add(temp1, y2, y);
+	//temp2 = 1 + y + y2
+	mpf_add(temp2, temp1, one);
+	//temp1 = y*(1 + y + y2)
+	mpf_mul(temp1, temp2, y);
+
+	//compute 2^(2 * i + 1)
+	mpf_mul(powers2, four, powers2);
+
+	//compute aP2
+	mpf_mul(aP2, powers2, temp1);
+}
+
 
 int main(void) {
 
 	mpf_t one, two, four, six, pi, sqrt2, four_sqrt2, a, a_prev, y, y_prev, powers2;
 
-	mpf_set_default_prec(4004);
+	mpf_set_default_prec(4004); //reference example solution from Ron Mak
 
 	auto start = chrono::steady_clock::now();
 
@@ -76,7 +116,7 @@ int main(void) {
 		mpf_init(yroot4);
 		mpf_init(aP1);
 		mpf_init(aP2);
-		mpf_init(y2);
+		
 
 		//y4 = power(y_prev,4)
 		mpf_init(y4);
@@ -92,28 +132,17 @@ int main(void) {
 		mpf_div(y, temp1, temp2);
 
 		//compute aP1 = a_prev*power((1+y), 4)
-		mpf_add(temp1, one, y);
-		power4(temp2, temp1);
-		mpf_mul(aP1, a_prev, temp2);
+		compute_aP1(aP1, y, a_prev);
+	
 
-		//compute aP2 = power(2, 2i + 1) * y * (1+ y + power(y, 2))
-		mpf_mul(y2, y, y);
-		mpf_add(temp1, y2, y);
-		//temp2 = 1 + y + y2
-		mpf_add(temp2, temp1, one);
-		//temp1 = y*(1 + y + y2)
-		mpf_mul(temp1, temp2, y);
-
-		//compute 2^(2 * i + 1)
-		mpf_mul(powers2, four, powers2);
-
-		//compute aP2
-		mpf_mul(aP2, powers2, temp1);
+		//compute aP2 = 2^(2i + 1) * y * (1+ y + y^2)
+		compute_aP2(aP2, y, powers2);
 
 		//compute a
-
 		mpf_sub(a, aP1, aP2);
-
+		// gmp_printf("aP1 : %.1000Ff \n", aP1);
+		// gmp_printf("aP2 : %.1000Ff \n", aP2);
+		// gmp_printf("a : %.1000Ff \n", a);
 		mpf_set(a_prev, a);
 		mpf_set(y_prev, y);
 
@@ -128,12 +157,14 @@ int main(void) {
 	mpf_div(pi, one, a);
 	auto end = chrono::steady_clock::now();
 
-	//gmp_printf("C API: pi to 1,000 places: %.1000Ff \n", pi);
+	gmp_printf("PI : %.1000Ff \n", pi);
+
+
 	mp_exp_t exp; 
     char *str = NULL;
     char *s = mpf_get_str(str, &exp, 10, 1001, pi);
 
-    char *p = s + 1;  // skip the 3 before the decimal point
+    char *p = s + 1;  // skip the "3" before the decimal point
 
     cout << endl;
     cout << "3.";
