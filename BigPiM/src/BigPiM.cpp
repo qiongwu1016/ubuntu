@@ -4,13 +4,17 @@
 #include <stdint.h>
 #include <chrono>
 #include <cstring>
+#include <ctime>
 
 #include <mpir.h>
 
 using namespace std;
+// typedef pair<steady_clock::time_point, steady_clock::time_point> Timings; // reference lecture code fibonacci by Ron Mak
+// Timings fibonacci_thread(int n);
+
 
 //CONSTANTS
-const int ITERATIONS = 5;
+const int ITERATIONS = 10;
 
 //reference: example solution by Prof.Mak
 void root4(mpf_t& root4, const mpf_t& x)
@@ -74,11 +78,14 @@ void compute_aP2(mpf_t& aP2, const mpf_t& y, mpf_t& powers2)
 
 int main(void) {
 
+	auto start = chrono::steady_clock::now(); //start timing
+	// auto now = std::chrono::system_clock::now();
+	//  std::cout << "Start time was: "
+ //              << std::put_time(std::localtime(&now), "%F %T") << '\n';
+
 	mpf_t one, two, four, six, pi, sqrt2, four_sqrt2, a, a_prev, y, y_prev, powers2;
 
-	mpf_set_default_prec(4004); //reference example solution from Ron Mak
-
-	auto start = chrono::steady_clock::now();
+	mpf_set_default_prec(4000004); //reference example solution from Ron Mak
 
 	  // Multiple-precision constants.
 	mpf_init(one);
@@ -132,6 +139,7 @@ int main(void) {
 		mpf_div(y, temp1, temp2);
 
 		//compute aP1 = a_prev*power((1+y), 4)
+		
 		compute_aP1(aP1, y, a_prev);
 	
 
@@ -155,14 +163,15 @@ int main(void) {
 
 	mpf_init(pi);
 	mpf_div(pi, one, a);
-	auto end = chrono::steady_clock::now();
+	auto end = chrono::steady_clock::now(); //end timing
 
-	gmp_printf("PI : %.1000Ff \n", pi);
+
+	//gmp_printf("PI : %.1000Ff \n", pi);
 
 
 	mp_exp_t exp; 
     char *str = NULL;
-    char *s = mpf_get_str(str, &exp, 10, 1001, pi);
+    char *s = mpf_get_str(str, &exp, 10, 1000001, pi);
 
     char *p = s + 1;  // skip the "3" before the decimal point
 
@@ -172,7 +181,7 @@ int main(void) {
     char block[11];  // +1 for the ending \0
 
     // Loop for each line.
-    for (int i = 1; i <= 10; i++)
+    for (int i = 1; i <= 10000; i++)
     {
         // Loop to print blocks of digits in each line.
         for (int j = 0; j < 100; j += 10)
@@ -195,7 +204,7 @@ int main(void) {
 
 	cout << "Elapsed time: "
 		<< chrono::duration_cast<chrono::nanoseconds>(end - start).count()
-		<< " nsecs    = " <<chrono::duration_cast<chrono::nanoseconds>(end - start).count()*10e-9
+		<< " nsecs    = " <<chrono::duration_cast<chrono::nanoseconds>(end - start).count()*1e-9
 		<< " seconds" << endl;
 
 
