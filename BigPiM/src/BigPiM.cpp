@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <chrono>
 #include <cstring>
-#include <ctime>
+#include <thread>
 
 #include <mpir.h>
 
@@ -36,7 +36,7 @@ void power4(mpf_t& xxxx, const mpf_t& x)
 }
 
 //P1 = a_prev*(1+y)^4
-void compute_aP1(mpf_t& aP1, const mpf_t& y, const mpf_t& a_prev)
+void compute_aP1(mpf_t& aP1, mpf_t& y, mpf_t& a_prev)
 {
 	mpf_t temp1, temp2, one;
 	mpf_init(one);
@@ -50,7 +50,7 @@ void compute_aP1(mpf_t& aP1, const mpf_t& y, const mpf_t& a_prev)
 }
 
 //aP2 = 2^(2i + 1) * y * (1+ y + y^2)
-void compute_aP2(mpf_t& aP2, const mpf_t& y, mpf_t& powers2)
+void compute_aP2(mpf_t& aP2, mpf_t& y, mpf_t& powers2)
 {
 	mpf_t temp1, temp2, one, four, y2;
 	mpf_init(temp1);
@@ -139,12 +139,16 @@ int main(void) {
 		mpf_div(y, temp1, temp2);
 
 		//compute aP1 = a_prev*power((1+y), 4)
-		
-		compute_aP1(aP1, y, a_prev);
+		thread aP1_thread(compute_aP1, ref(aP1), ref(y), ref(a_prev));
+		//compute_aP1(aP1, y, a_prev);
 	
 
 		//compute aP2 = 2^(2i + 1) * y * (1+ y + y^2)
-		compute_aP2(aP2, y, powers2);
+		thread aP2_thread(compute_aP2, ref(aP2), ref(y), ref(powers2));
+		//compute_aP2(aP2, y, powers2);
+
+		aP1_thread.join();
+		aP2_thread.join();
 
 		//compute a
 		mpf_sub(a, aP1, aP2);
