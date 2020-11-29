@@ -26,8 +26,35 @@ void QuickSorter::quicksort(const int left, const int right)
 
 Element& QuickSorter::choose_pivot(const int left, const int right)
 {
-    return choose_pivot_strategy(left, right);
+    if (right - left <= 1) return data[left];
+    int middle = (right - left) / 2;
+
+    compare_count++;
+    if (data[middle] > data[left]) {
+        compare_count++;
+        if (data[right] > data[middle]) {
+            swap(middle, left);
+            return data[left];
+        }
+        compare_count++;
+        if (data[right] < data[left])
+            return data[left];
+        swap(right, left);
+        return data[left];
+    }
+    compare_count++;
+    if (data[right] > data[left]) {
+        return data[left];
+    }
+    compare_count++;
+    if (data[right] < data[middle]) {
+        swap(middle, left);
+        return data[left];
+    }
+    swap(right, left);
+    return data[left];
 }
+
 
 int QuickSorter::partition(const int left, const int right, const Element& pivot)
 {

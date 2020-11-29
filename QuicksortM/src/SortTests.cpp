@@ -1,28 +1,13 @@
-//#include <iostream>
-//
-//using namespace std;
-//
-//int main() {
-//	return 0;
-//}
 
+//reference: code provided by Ron Mak in codecheck(Assignment 12)
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <ctime>
 #include <chrono>
 #include "DataRandom.h"
-#include "DataSorted.h"
-#include "DataReverseSorted.h"
-#include "DataAllZeros.h"
-#include "SelectionSort.h"
-#include "InsertionSort.h"
-#include "ShellSortSuboptimal.h"
-#include "ShellSortOptimal.h"
-#include "QuickSortSuboptimal.h"
-#include "QuickSortOptimal.h"
-#include "Sorter.h"
-#include "MergeSort.h"
+#include "QuickSorter.h"
+
 
 using namespace std;
 using namespace std::chrono;
@@ -57,27 +42,28 @@ int main()
     bool sorted;
 
     // Number of data items to test.
-    int N[] = {10, 100, 1000, 10000};
+    int N[] = {10000};
 
     // Sorting algorithms.
     Sorter *sorters[] =
     {
-        new SelectionSort("Selection sort"),
-        new InsertionSort("Insertion sort"),
-        new ShellSortSuboptimal("Shellsort suboptimal"),
-        new ShellSortOptimal("Shellsort optimal"),
-        new QuickSortSuboptimalRight("Quicksort suboptimal"),
-        new QuickSortOptimal("Quicksort optimal"),
-        new MergeSort("Mergesort")
+        // new SelectionSort("Selection sort"),
+        // new InsertionSort("Insertion sort"),
+        // new ShellSortSuboptimal("Shellsort suboptimal"),
+        // new ShellSortOptimal("Shellsort optimal"),
+        // new QuickSortSuboptimalRight("Quicksort suboptimal"),
+        // new QuickSortOptimal("Quicksort optimal"),
+        // new MergeSort("Mergesort")
+        new QuickSorter("QuickSorter")
     };
 
     // Data generators.
     DataGenerator *generators[] =
     {
         new DataRandom(),
-        new DataSorted(),
-        new DataReverseSorted(),
-        new DataAllZeros(),
+        // new DataSorted(),
+        // new DataReverseSorted(),
+        // new DataAllZeros(),
     };
 
     auto start_time = steady_clock::now();

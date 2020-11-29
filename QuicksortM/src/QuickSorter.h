@@ -20,22 +20,13 @@ public:
     /**
      * Destructor.
      */
-    virtual ~QuickSorter() {}
+     ~QuickSorter() {}
 
     /**
      * Run the quicksort algorithm.
      * @throws an exception if an error occurred.
      */
-    virtual void run_sort_algorithm() throw (string);
-
-protected:
-    /**
-     * Choose a pivot strategy. Implemented by the quicksort subclasses.
-     * @param left the left index of the subrange to sort.
-     * @param right the right index of the subrange to sort.
-     * @return the chosen pivot value.
-     */
-    virtual Element& choose_pivot_strategy(const int left, const int right) = 0;
+    void run_sort_algorithm() throw (string);
 
 private:
     /**

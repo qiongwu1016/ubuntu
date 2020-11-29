@@ -3,7 +3,7 @@
 
 using namespace std;
 
-bool Sorter::sort() throw (string)
+bool Sorter::sort()
 {
     move_count = 0;
     compare_count = 0;

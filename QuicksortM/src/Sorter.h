@@ -94,7 +94,7 @@ public:
      * Calculate the elapsed time in milliseconds.
      * @throws an exception if an error occurred.
      */
-    virtual bool sort() throw (string);
+    virtual bool sort();
 
 protected:
     int size;            // number of data elements to sort
@@ -104,7 +104,7 @@ protected:
     /**
      * Abstract function to run a sorting algorithm.
      */
-    virtual void run_sort_algorithm() throw (string) = 0;
+    virtual void run_sort_algorithm() = 0;
 
     /**
      * Abstract function to check if the data is sorted.
